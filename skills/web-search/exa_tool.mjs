@@ -14,19 +14,74 @@ const TRACKING_PARAMS = new Set([
   "igshid", "twclid", "msclkid", "yclid", "wa_id", "wbraid"
 ]);
 
-function cleanUrl(urlStr) {
+function normalizeUrl(urlStr) {
   if (!urlStr) return "";
   try {
-    const u = new URL(urlStr);
+    const u = new URL(urlStr.trim());
+    u.protocol = u.protocol.toLowerCase();
+    u.hostname = u.hostname.toLowerCase();
+    u.hash = ""; // rimuovi frammenti ancòra
+
+    // Rimuovi parametri di tracking
     for (const key of [...u.searchParams.keys()]) {
       if (TRACKING_PARAMS.has(key.toLowerCase())) {
         u.searchParams.delete(key);
       }
     }
+
+    // Normalizza trailing slash sul pathname (es. /path/ -> /path)
+    if (u.pathname.length > 1 && u.pathname.endsWith("/")) {
+      u.pathname = u.pathname.slice(0, -1);
+    }
+
     return u.toString();
   } catch {
-    return urlStr;
+    return urlStr.trim();
   }
+}
+
+function deduplicateAndMergeResults(rawResults, maxHighlights = 3) {
+  const map = new Map();
+
+  for (const item of rawResults) {
+    if (!item.title || !item.url) continue;
+
+    const normalizedKey = normalizeUrl(item.url);
+    if (!normalizedKey) continue;
+
+    if (!map.has(normalizedKey)) {
+      map.set(normalizedKey, {
+        title: item.title.slice(0, 100),
+        url: normalizedKey,
+        published: item.published || "N/A",
+        highlights: (item.highlights || []).slice(0, maxHighlights)
+      });
+    } else {
+      const existing = map.get(normalizedKey);
+
+      // Aggiorna data di pubblicazione se prima assente
+      if ((existing.published === "N/A" || !existing.published) && item.published && item.published !== "N/A") {
+        existing.published = item.published;
+      }
+
+      // Se il nuovo titolo è più descrittivo, aggiorna
+      if (existing.title.length < item.title.length && item.title.length <= 100) {
+        existing.title = item.title;
+      }
+
+      // Fondi gli highlights senza duplicati
+      const currentHls = new Set(existing.highlights.map(h => h.trim().toLowerCase()));
+      for (const hl of item.highlights || []) {
+        const trimmed = hl.trim();
+        if (trimmed && !currentHls.has(trimmed.toLowerCase()) && existing.highlights.length < maxHighlights) {
+          existing.highlights.push(trimmed.slice(0, 200));
+          currentHls.add(trimmed.toLowerCase());
+        }
+      }
+    }
+  }
+
+  return Array.from(map.values());
 }
 
 async function callMcpTool(toolName, args, apiKey) {
@@ -81,7 +136,7 @@ async function callMcpTool(toolName, args, apiKey) {
 }
 
 function parseSearchBlocks(textBlocks, maxHighlights = 3) {
-  const results = [];
+  const rawResults = [];
 
   for (const block of textBlocks) {
     if (!block.startsWith("Title:")) continue;
@@ -95,7 +150,7 @@ function parseSearchBlocks(textBlocks, maxHighlights = 3) {
 
     for (const line of lines) {
       if (line.startsWith("URL:")) {
-        url = cleanUrl(line.replace("URL: ", "").trim());
+        url = normalizeUrl(line.replace("URL: ", "").trim());
       } else if (line.startsWith("Published:") && !pub) {
         pub = line.replace("Published: ", "").trim();
       } else if (line.startsWith("Highlights:") && !inHighlights) {
@@ -117,7 +172,7 @@ function parseSearchBlocks(textBlocks, maxHighlights = 3) {
     }
 
     if (title && url) {
-      results.push({
+      rawResults.push({
         title,
         url,
         published: pub || "N/A",
@@ -126,7 +181,7 @@ function parseSearchBlocks(textBlocks, maxHighlights = 3) {
     }
   }
 
-  return results;
+  return deduplicateAndMergeResults(rawResults, maxHighlights);
 }
 
 export async function webSearch(query, numResults = 10, category = null) {
@@ -140,7 +195,7 @@ export async function webSearch(query, numResults = 10, category = null) {
 
 export async function webFetch(url, maxChars = 4000) {
   const apiKey = process.env.EXA_API_KEY;
-  const cleanedUrl = cleanUrl(url);
+  const cleanedUrl = normalizeUrl(url);
   const blocks = await callMcpTool("web_fetch_exa", { urls: [cleanedUrl] }, apiKey);
   const content = blocks.join("\n\n").trim();
 
@@ -180,9 +235,9 @@ export async function deepSearch(query, numResults = 10, searchType = "deep", ca
 
       if (res.ok) {
         const data = await res.json();
-        const results = (data.results || []).map((item) => ({
+        const rawResults = (data.results || []).map((item) => ({
           title: (item.title || "").slice(0, 100),
-          url: cleanUrl(item.url || ""),
+          url: normalizeUrl(item.url || ""),
           published: item.publishedDate || "N/A",
           highlights: (item.highlights || []).slice(0, 3).map((h) => h.slice(0, 200))
         }));
@@ -190,7 +245,7 @@ export async function deepSearch(query, numResults = 10, searchType = "deep", ca
         return {
           mode: "api_deep_search",
           query,
-          results
+          results: deduplicateAndMergeResults(rawResults)
         };
       }
     } catch (e) {
@@ -198,25 +253,21 @@ export async function deepSearch(query, numResults = 10, searchType = "deep", ca
     }
   }
 
-  // Fallback se anonimo o API error: parallel multi-query
+  // Fallback se anonimo o API error: parallel multi-query con deduplica
   const queries = [query, ...additionalQueries].slice(0, 4);
-  const seenUrls = new Set();
-  const combinedResults = [];
+  const rawResults = [];
 
   for (const q of queries) {
     const res = await webSearch(q, Math.max(3, Math.floor(numResults / queries.length)), category);
-    for (const r of res) {
-      if (!seenUrls.has(r.url)) {
-        seenUrls.add(r.url);
-        combinedResults.push(r);
-      }
-    }
+    rawResults.push(...res);
   }
+
+  const merged = deduplicateAndMergeResults(rawResults);
 
   return {
     mode: "mcp_multi_search_fallback",
     queries,
-    results: combinedResults.slice(0, numResults)
+    results: merged.slice(0, numResults)
   };
 }
 
