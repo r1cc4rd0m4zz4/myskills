@@ -1,0 +1,21 @@
+{
+  "name": "myskills",
+  "version": "1.0.0",
+  "description": "Curated agent skills for AI coding assistants (web-search, secure-url-fetcher)",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/r1cc4rd0m4zz4/myskills"
+  },
+  "keywords": [
+    "agent",
+    "skills",
+    "ai",
+    "pi",
+    "claude-code",
+    "codex",
+    "web-search",
+    "security"
+  ],
+  "license": "MIT"
+}
