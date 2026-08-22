@@ -11,7 +11,11 @@ This repository hosts a curated collection of agent-agnostic skills. Any autonom
    - **Node.js (ESM `.mjs`)**: For HTTP, JSON-RPC, stream parsing, and cross-platform I/O. Use Node 18+ native `fetch` and standard globals. No required `node_modules` or `npm install` steps for skill scripts.
    - **Python (PEP 723)**: If Python is required, declare dependencies inline via PEP 723 metadata blocks and run via `uv run`.
 3. **Strict Token Economy**: LLM context windows are finite. Raw API or HTML dumping is prohibited. Skills must filter, prune, deduplicate, and compact outputs (~50–100 tokens per record, ~80% reduction vs raw payloads).
-4. **Security by Default**:
+4. **Absolute Privacy & Zero Data Exfiltration**:
+   - **Zero PII / Host Leaks**: Never hardcode, commit, or log non-public personal information, local OS usernames, user home directories (e.g., `/Users/...`, `/home/...`), internal folder hierarchies, internal IP addresses/hostnames, credentials, or machine configuration details.
+   - **Generic Placeholders Only**: All examples, tests, scripts, and documentation MUST use generic placeholders (e.g., `<skill_dir>`, `~/.agents/skills`, `https://example.com`, `sk-...`).
+   - **Grill-Me on Ambiguity**: If there is the slightest doubt about whether a detail, path, identifier, or value constitutes personal, confidential, or internal host configuration information, **NEVER assume or proceed silently**. Interrogate and grill the maintainer directly for explicit clarification.
+5. **Security by Default**:
    - URL inputs must undergo SSRF validation and DNS pinning before fetching (`secure-url-fetcher`).
    - Query inputs must use safe JSON serialization (`JSON.stringify` / `json.dumps`), avoiding shell string interpolations.
    - Tracking parameters (`utm_*`, `gclid`, `fbclid`, `ref`, etc.) must be stripped during URL normalization.
@@ -64,6 +68,7 @@ Compaction guarantees and formatting rules.
 ## 4. Verification & Testing Gate
 
 Before committing any change to this repository:
-1. **Self-Check**: Run the skill's tool runner directly from the terminal with a real or mocked invocation.
-2. **Automated Tests**: If test suites exist (e.g. `run_tests.py`), all tests must pass with 100% success rate.
-3. **No Unused Scaffolding**: Keep diffs minimal and delete dead code immediately.
+1. **Privacy & PII Audit**: Scan diffs for any accidental leaks of local paths, usernames, machine configurations, or confidential tokens.
+2. **Self-Check**: Run the skill's tool runner directly from the terminal with a real or mocked invocation.
+3. **Automated Tests**: If test suites exist (e.g. `run_tests.py`), all tests must pass with 100% success rate.
+4. **No Unused Scaffolding**: Keep diffs minimal and delete dead code immediately.

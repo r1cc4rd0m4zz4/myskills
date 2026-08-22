@@ -8,8 +8,9 @@ We welcome contributions from both human developers and AI agents! This reposito
 
 1. **Harness-Agnostic**: Skills must never assume a specific AI client (Claude Code, Pi, Cursor, Codex, OpenCode, etc.). They must work universally.
 2. **Zero Bloat & Token Economy**: Prune metadata, tracking parameters, and raw boilerplate before returning results to LLM context windows (~80% token compaction target).
-3. **Defense in Depth**: All network/shell tools must safely handle input boundaries (no raw shell string interpolations, strict IP resolution & pinning for network requests).
-4. **Self-Contained Runtimes**: Use zero-dependency Node.js ESM (`.mjs`) or Python with inline PEP 723 metadata (`uv`).
+3. **Absolute Privacy & Zero Data Exfiltration**: Never commit personal information, private user paths (e.g. `/Users/...`, `/home/...`), internal configuration secrets, or unverified environment details. If in doubt, ask/grill the maintainer.
+4. **Defense in Depth**: All network/shell tools must safely handle input boundaries (no raw shell string interpolations, strict IP resolution & pinning for network requests).
+5. **Self-Contained Runtimes**: Use zero-dependency Node.js ESM (`.mjs`) or Python with inline PEP 723 metadata (`uv`).
 
 ---
 
