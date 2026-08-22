@@ -54,8 +54,13 @@ cd myskills
 
 ## Contributing
 
-See [`AGENTS.md`](AGENTS.md) for architectural guidelines, test requirements, and contribution rules.
-See [`CONTEXT.md`](CONTEXT.md) for domain terminology and source quality scoring standards.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for contribution guidelines, and [`AGENTS.md`](AGENTS.md) / [`CONTEXT.md`](CONTEXT.md) for architectural and domain standards.
+
+---
+
+## Author & Contributors
+
+- **Riccardo Mazza** ([@r1cc4rd0m4zz4](https://github.com/r1cc4rd0m4zz4)) - Creator & Maintainer
 
 ---
 
