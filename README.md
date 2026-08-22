@@ -36,7 +36,7 @@ pi install git:github.com/r1cc4rd0m4zz4/myskills
 Clone the repository and link all skills into your local agent directories (`~/.agents/skills/`):
 
 ```bash
-git clone https://github.com/r1cc4rd0m4zz4/myskills.git myskills
+git clone https://github.com/r1cc4rd0m4zz4/myskills.git
 cd myskills
 ./scripts/link-skills.sh
 ```
