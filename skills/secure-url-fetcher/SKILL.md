@@ -49,5 +49,5 @@ Declared inline within the script metadata block (**PEP 723**).
 To invoke this skill without installing dependencies permanently into your environment, use the uv CLI manager:
 
 ```bash
-uv run .agent/skills/secure_url_fetcher/secure_fetcher.py "[URL]"
+uv run <skill_dir>/secure-fetcher.py "[URL]"
 ```
