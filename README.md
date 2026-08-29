@@ -18,11 +18,12 @@ A curated collection of production-grade, harness-agnostic AI agent skills. Buil
 
 ## Universal Installation
 
-### Option 1: Interactive Agent Installer (`npx skills`)
-Install any skill into any configured agent environment using the open [skills.sh](https://skills.sh) standard:
+### Option 1: Interactive Agent Installer (`skills.sh`)
+Install any skill into any configured agent environment (`npx`, `pnpx`, or `bunx`):
 
 ```bash
 npx skills add r1cc4rd0m4zz4/myskills
+# or: pnpx skills add r1cc4rd0m4zz4/myskills
 ```
 
 ### Option 2: Pi Coding Agent
@@ -46,9 +47,10 @@ cd myskills
 ## Design Principles
 
 1. **Zero Vendor Lock-In**: Compliant with the open Agent Skills standard. Every skill is defined in a standard `SKILL.md` with YAML frontmatter.
-2. **Deterministic Token Economy**: Raw JSON/HTML payloads are pruned and compressed before reaching the LLM context window.
-3. **Defense in Depth**: Zero unvalidated string interpolation in shell calls; strictly validated network I/O with IP pinning.
-4. **Self-Contained Execution**: No bloat. Node tools run as zero-dependency standalone `.mjs` modules; Python tools use inline PEP 723 metadata with `uv`.
+2. **Deterministic Token Economy**: Raw JSON/HTML payloads are pruned and compressed (~80% context savings) before reaching the LLM context window.
+3. **Absolute Privacy**: Zero host or environment data leakage; all paths, examples, and fixtures use generic placeholders.
+4. **Defense in Depth**: Zero unvalidated string interpolation in shell calls; strictly validated network I/O with IP pinning.
+5. **Self-Contained Execution**: No bloat. Node tools run as zero-dependency standalone `.mjs` modules; Python tools use inline PEP 723 metadata with `uv`.
 
 ---
 
