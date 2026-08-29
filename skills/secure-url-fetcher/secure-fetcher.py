@@ -179,7 +179,7 @@ def secure_url_fetch(url_str: str, timeout: float = 5.0) -> str:
 # ── CLI entry point ───────────────────────────────────────────────────────────
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: uv run --offline secure-fetcher.py <URL>")
+        print("Uso: uv run secure-fetcher.py <URL>")
         sys.exit(1)
 
     try:

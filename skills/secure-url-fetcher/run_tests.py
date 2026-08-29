@@ -10,7 +10,7 @@ Test runner per secure-url-fetcher.
 Usa unittest stdlib (no pytest necessario) con dipendenze gestite da uv.
 
 Esecuzione:
-    uv run --offline run_tests.py
+    uv run run_tests.py
 """
 
 import unittest
