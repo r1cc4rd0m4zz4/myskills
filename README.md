@@ -1,5 +1,6 @@
 # Curated Agent Skills
 
+[![CI](https://github.com/r1cc4rd0m4zz4/myskills/actions/workflows/ci.yml/badge.svg)](https://github.com/r1cc4rd0m4zz4/myskills/actions/workflows/ci.yml)
 [![skills.sh](https://skills.sh/b/r1cc4rd0m4zz4/myskills)](https://skills.sh/r1cc4rd0m4zz4/myskills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -19,11 +20,15 @@ A curated collection of production-grade, harness-agnostic AI agent skills. Buil
 ## Universal Installation
 
 ### Option 1: Interactive Agent Installer (`skills.sh`)
-Install any skill into any configured agent environment (`npx`, `pnpx`, or `bunx`):
+Install the complete suite or specific skills into any agent harness (`npx`, `pnpx`, or `bunx`):
 
 ```bash
+# Install all skills
 npx skills add r1cc4rd0m4zz4/myskills
-# or: pnpx skills add r1cc4rd0m4zz4/myskills
+
+# Or install individual skills
+npx skills add r1cc4rd0m4zz4/myskills/skills/web-search
+npx skills add r1cc4rd0m4zz4/myskills/skills/secure-url-fetcher
 ```
 
 ### Option 2: Pi Coding Agent

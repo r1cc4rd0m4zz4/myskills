@@ -3,10 +3,21 @@
   "version": "1.0.0",
   "description": "Curated agent skills for AI coding assistants (web-search, secure-url-fetcher)",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "./scripts/verify.sh",
+    "test:node": "node skills/web-search/run_tests.mjs",
+    "test:python": "uv run skills/secure-url-fetcher/run_tests.py",
+    "link": "./scripts/link-skills.sh"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/r1cc4rd0m4zz4/myskills"
+    "url": "https://github.com/r1cc4rd0m4zz4/myskills.git"
   },
+  "bugs": {
+    "url": "https://github.com/r1cc4rd0m4zz4/myskills/issues"
+  },
+  "homepage": "https://github.com/r1cc4rd0m4zz4/myskills#readme",
   "author": "Riccardo Mazza (https://github.com/r1cc4rd0m4zz4)",
   "keywords": [
     "agent",
@@ -14,9 +25,12 @@
     "ai",
     "pi",
     "claude-code",
+    "cursor",
     "codex",
     "web-search",
-    "security"
+    "security",
+    "ssrf-protection",
+    "token-optimization"
   ],
   "license": "MIT"
 }

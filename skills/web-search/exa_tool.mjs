@@ -51,7 +51,7 @@ function deduplicateAndMergeResults(rawResults, maxHighlights = 3) {
         title: item.title.slice(0, 100),
         url: normalizedKey,
         published: item.published || "N/A",
-        highlights: (item.highlights || []).slice(0, maxHighlights)
+        highlights: (item.highlights || []).slice(0, maxHighlights).map(h => typeof h === "string" ? h.slice(0, 200) : h)
       });
     } else {
       const existing = map.get(normalizedKey);
