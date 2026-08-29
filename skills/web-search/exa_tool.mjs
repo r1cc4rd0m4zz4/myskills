@@ -2,7 +2,6 @@
 /**
  * Exa Tool Runner for web-search skill.
  * Zero-dependency standalone ES Module (Node 18+).
- * Works across macOS, Ubuntu, WSL2 without package.json or npm install.
  */
 
 const MCP_URL = "https://mcp.exa.ai/mcp";
@@ -20,16 +19,14 @@ function normalizeUrl(urlStr) {
     const u = new URL(urlStr.trim());
     u.protocol = u.protocol.toLowerCase();
     u.hostname = u.hostname.toLowerCase();
-    u.hash = ""; // rimuovi frammenti ancòra
+    u.hash = "";
 
-    // Rimuovi parametri di tracking
     for (const key of [...u.searchParams.keys()]) {
       if (TRACKING_PARAMS.has(key.toLowerCase())) {
         u.searchParams.delete(key);
       }
     }
 
-    // Normalizza trailing slash sul pathname (es. /path/ -> /path)
     if (u.pathname.length > 1 && u.pathname.endsWith("/")) {
       u.pathname = u.pathname.slice(0, -1);
     }
@@ -59,17 +56,14 @@ function deduplicateAndMergeResults(rawResults, maxHighlights = 3) {
     } else {
       const existing = map.get(normalizedKey);
 
-      // Aggiorna data di pubblicazione se prima assente
       if ((existing.published === "N/A" || !existing.published) && item.published && item.published !== "N/A") {
         existing.published = item.published;
       }
 
-      // Se il nuovo titolo è più descrittivo, aggiorna
       if (existing.title.length < item.title.length && item.title.length <= 100) {
         existing.title = item.title;
       }
 
-      // Fondi gli highlights senza duplicati
       const currentHls = new Set(existing.highlights.map(h => h.trim().toLowerCase()));
       for (const hl of item.highlights || []) {
         const trimmed = hl.trim();
@@ -121,14 +115,29 @@ async function callMcpTool(toolName, args, apiKey) {
     if (line.startsWith("data: ")) {
       try {
         const obj = JSON.parse(line.slice(6));
-        if (obj.result && Array.isArray(obj.result.content)) {
-          for (const item of obj.result.content) {
-            if (item.type === "text" && item.text) {
-              textBlocks.push(item.text);
+        if (obj.error) {
+          throw new Error(obj.error.message || "MCP RPC Error");
+        }
+        if (obj.result) {
+          if (obj.result.isError) {
+            const errDetail = Array.isArray(obj.result.content)
+              ? obj.result.content.map(c => c.text).filter(Boolean).join(" ")
+              : "MCP execution returned error";
+            throw new Error(errDetail);
+          }
+          if (Array.isArray(obj.result.content)) {
+            for (const item of obj.result.content) {
+              if (item.type === "text" && item.text) {
+                textBlocks.push(item.text);
+              }
             }
           }
         }
-      } catch {}
+      } catch (err) {
+        if (err.message && (err.message.includes("rate limit") || err.message.includes("MCP"))) {
+          throw err;
+        }
+      }
     }
   }
 
@@ -137,36 +146,41 @@ async function callMcpTool(toolName, args, apiKey) {
 
 function parseSearchBlocks(textBlocks, maxHighlights = 3) {
   const rawResults = [];
+  const fullText = textBlocks.join("\n\n");
+  const blocks = fullText
+    .split(/(?:\n\s*---\s*\n|(?=(?:\n|^)Title:\s*))/)
+    .map(b => b.trim())
+    .filter(b => b.startsWith("Title:"));
 
-  for (const block of textBlocks) {
-    if (!block.startsWith("Title:")) continue;
-
+  for (const block of blocks) {
     const lines = block.split("\n");
-    const title = (lines[0] || "").replace("Title: ", "").trim().slice(0, 100);
+    let title = "";
     let url = "";
     let pub = "";
     const highlights = [];
     let inHighlights = false;
 
     for (const line of lines) {
-      if (line.startsWith("URL:")) {
-        url = normalizeUrl(line.replace("URL: ", "").trim());
-      } else if (line.startsWith("Published:") && !pub) {
-        pub = line.replace("Published: ", "").trim();
-      } else if (line.startsWith("Highlights:") && !inHighlights) {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith("Title:")) {
+        title = trimmedLine.replace(/^Title:\s*/, "").trim().slice(0, 100);
+      } else if (trimmedLine.startsWith("URL:")) {
+        url = normalizeUrl(trimmedLine.replace(/^URL:\s*/, "").trim());
+      } else if (trimmedLine.startsWith("Published:")) {
+        const val = trimmedLine.replace(/^Published:\s*/, "").trim();
+        if (val && val !== "N/A") pub = val;
+      } else if (trimmedLine.startsWith("Author:")) {
+        continue;
+      } else if (trimmedLine.startsWith("Highlights:")) {
         inHighlights = true;
-        const hl = line.replace("Highlights:", "").trim();
+        const hl = trimmedLine.replace(/^Highlights:\s*/, "").trim();
         if (hl && highlights.length < maxHighlights) {
           highlights.push(hl.slice(0, 200));
         }
-      } else if (inHighlights && line.startsWith("...")) {
-        continue;
-      } else if (inHighlights && line.trim()) {
-        if (highlights.length < maxHighlights) {
-          highlights.push(line.trim().slice(0, 200));
-        }
-        if (highlights.length >= maxHighlights) {
-          break;
+      } else if (inHighlights) {
+        if (trimmedLine.startsWith("...") || trimmedLine === "---") continue;
+        if (trimmedLine.length > 0 && highlights.length < maxHighlights) {
+          highlights.push(trimmedLine.slice(0, 200));
         }
       }
     }
@@ -253,7 +267,6 @@ export async function deepSearch(query, numResults = 10, searchType = "deep", ca
     }
   }
 
-  // Fallback se anonimo o API error: parallel multi-query con deduplica
   const queries = [query, ...additionalQueries].slice(0, 4);
   const rawResults = [];
 
