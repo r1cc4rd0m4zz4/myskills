@@ -1,6 +1,5 @@
 # Curated Agent Skills
 
-[![CI](https://github.com/r1cc4rd0m4zz4/myskills/actions/workflows/ci.yml/badge.svg)](https://github.com/r1cc4rd0m4zz4/myskills/actions/workflows/ci.yml)
 [![skills.sh](https://skills.sh/b/r1cc4rd0m4zz4/myskills)](https://skills.sh/r1cc4rd0m4zz4/myskills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 

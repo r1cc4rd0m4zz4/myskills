@@ -3,7 +3,7 @@ name = "secure-url-fetcher"
 version = "1.0.0"
 requires-python = ">=3.8"
 dependencies = [
-    "urllib3>=2.0.0",
+    "urllib3==2.2.3",
 ]
 
 [dependency-groups]
