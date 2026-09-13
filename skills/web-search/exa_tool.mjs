@@ -200,7 +200,7 @@ function parseSearchBlocks(textBlocks, maxHighlights = 3) {
 
 export async function webSearch(query, numResults = 10, category = null) {
   const apiKey = process.env.EXA_API_KEY;
-  const args = { query, numResults };
+  const args = { query, objective: query, numResults };
   if (category) args.category = category;
 
   const blocks = await callMcpTool("web_search_exa", args, apiKey);

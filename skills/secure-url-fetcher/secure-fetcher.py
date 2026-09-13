@@ -1,3 +1,4 @@
+# pyright: reportMissingImports=false, reportGeneralTypeIssues=false, reportAttributeAccessIssue=false
 # /// script
 # requires-python = ">=3.8"
 # dependencies = [
@@ -68,7 +69,7 @@ def _resolve_ip(hostname: str, port: int) -> Tuple[str, int]:
         try:
             addr_info = socket.getaddrinfo(hostname, port, family, socket.SOCK_STREAM)
             if addr_info:
-                return addr_info[0][4][0], family
+                return str(addr_info[0][4][0]), int(family)
         except socket.gaierror as exc:
             last_exc = exc
     raise ValueError(f"Impossibile risolvere il dominio '{hostname}': {last_exc}")
@@ -142,7 +143,7 @@ def secure_url_fetch(url_str: str, timeout: float = 5.0) -> str:
 
     try:
         # ── 5. Fetch con redirect DISABILITATI (SEV-3 FIX) ──────────────────
-        kwargs = dict(headers=headers, redirect=False)
+        kwargs: dict[str, object] = dict(headers=headers, redirect=False)
         if scheme == "https":
             kwargs["server_hostname"] = hostname  # SNI per TLS corretto
 
