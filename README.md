@@ -92,10 +92,10 @@ Download the universal guardrails directly into any project or your agent's glob
 
 ```bash
 # Into any local project root:
-curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/AGENTS.md -o AGENTS.md
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md -o AGENTS.md
 
 # Or into Pi Coding Agent global config:
-curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/AGENTS.md -o ~/.pi/agent/AGENTS.md
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md -o ~/.pi/agent/AGENTS.md
 ```
 
 ### Option 4: Local Clone for Development
