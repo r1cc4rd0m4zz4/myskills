@@ -56,6 +56,7 @@ Many agent skill toolkits and MCP wrappers introduce:
 
 | Skill | Description | Runtime | Security & Optimization |
 | :--- | :--- | :--- | :--- |
+| [`agent-guardrails`](skills/agent-guardrails/SKILL.md) | Universal defensive engineering guardrails: anti-bloat ladder, zero trust code auditing, and strict sanitization. | Universal Markdown | Prevents autonomous pushes, enforces input whitelisting, and bans PII/host leaks. |
 | [`web-search`](skills/web-search/SKILL.md) | High-signal web search, page extraction, and deep reasoning via Exa with ~80% token compaction and tracking deduplication. | Node.js 18+ (ESM, 0 deps) | Tracking parameter stripping (`utm_*`, `gclid`), URL normalization, multi-block parsing. |
 | [`secure-url-fetcher`](skills/secure-url-fetcher/SKILL.md) | Security-hardened HTTP/HTTPS fetcher with pre-resolution IP blacklisting and socket pinning. | Python (`uv`, `urllib3==2.2.3`) | Eliminates SSRF, DNS Rebinding, IPv6 bypass, and indirect HTTP redirect attacks. |
 
@@ -72,6 +73,7 @@ Install the full suite or individual skills into any agent environment using `np
 npx skills add r1cc4rd0m4zz4/myskills
 
 # Or install individual skills directly
+npx skills add r1cc4rd0m4zz4/myskills/skills/agent-guardrails
 npx skills add r1cc4rd0m4zz4/myskills/skills/web-search
 npx skills add r1cc4rd0m4zz4/myskills/skills/secure-url-fetcher
 ```
@@ -84,7 +86,19 @@ Install directly via Pi's package manager:
 pi install git:github.com/r1cc4rd0m4zz4/myskills
 ```
 
-### Option 3: Local Clone for Development
+### Option 3: Universal `AGENTS.md` (Project or Global)
+
+Download the universal guardrails directly into any project or your agent's global profile:
+
+```bash
+# Into any local project root:
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/AGENTS.md -o AGENTS.md
+
+# Or into Pi Coding Agent global config:
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/AGENTS.md -o ~/.pi/agent/AGENTS.md
+```
+
+### Option 4: Local Clone for Development
 
 Clone the repository and symlink skills into your agent directory (`~/.agents/skills/`):
 
