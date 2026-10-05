@@ -4,6 +4,8 @@
  * Zero-dependency standalone ES Module (Node 18+).
  */
 
+import { spawnSync } from "node:child_process";
+
 const MCP_URL = "https://mcp.exa.ai/mcp";
 const REST_SEARCH_URL = "https://api.exa.ai/search";
 const USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)";
@@ -286,6 +288,22 @@ export async function deepSearch(query, numResults = 10, searchType = "deep", ca
 
 // CLI Execution Entrypoint
 const [, , cmd, ...args] = process.argv;
+
+// Transparent proxy auto-detection: if proxy env vars exist but NODE_USE_ENV_PROXY is unset,
+// respawn CLI execution with NODE_USE_ENV_PROXY=1 so Node's native fetch routes through proxy without errors.
+const hasProxy = Boolean(
+  process.env.HTTPS_PROXY || process.env.https_proxy ||
+  process.env.HTTP_PROXY || process.env.http_proxy ||
+  process.env.ALL_PROXY || process.env.all_proxy
+);
+
+if (hasProxy && !process.env.NODE_USE_ENV_PROXY && !process.env.__EXA_PROXY_RESPAWNED && cmd) {
+  const result = spawnSync(process.execPath, process.argv.slice(1), {
+    env: { ...process.env, NODE_USE_ENV_PROXY: "1", __EXA_PROXY_RESPAWNED: "1" },
+    stdio: "inherit"
+  });
+  process.exit(result.status ?? 0);
+}
 
 if (cmd) {
   try {

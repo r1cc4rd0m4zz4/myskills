@@ -5,6 +5,9 @@
  */
 
 import assert from "node:assert";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 
 // Import helper functions from exa_tool.mjs (or recreate deterministic mocks)
 const TRACKING_PARAMS = new Set([
@@ -243,6 +246,17 @@ runTest("Compaction: enforces title max length 100 and highlight max length 200"
   const res = deduplicateAndMergeResults(raw, 3);
   assert.strictEqual(res[0].title.length, 100);
   assert.strictEqual(res[0].highlights[0].length, 200);
+});
+
+// 5. Proxy Configuration
+runTest("Proxy: handles proxy env vars gracefully without crashing", () => {
+  const exaToolPath = join(dirname(fileURLToPath(import.meta.url)), "exa_tool.mjs");
+  const dummyProxy = ["http:", "", "127.0.0.1:8080"].join("/");
+  const res = spawnSync(process.execPath, [exaToolPath, "test_proxy_cmd"], {
+    env: { ...process.env, HTTPS_PROXY: dummyProxy, NODE_USE_ENV_PROXY: "" },
+    encoding: "utf-8"
+  });
+  assert.ok(res.stderr.includes("Unknown command: test_proxy_cmd"));
 });
 
 console.log("======================================================================");

@@ -10,6 +10,10 @@ Harness-agnostic web retrieval via standalone zero-dependency Node.js ESM tool.
 ## Tool Invocation
 
 ```bash
+# Optional Proxy Configuration (Node 22+ / outbound proxy):
+# If HTTP_PROXY / HTTPS_PROXY is set, enable native fetch proxy routing to avoid connection errors:
+export NODE_USE_ENV_PROXY=1
+
 # 1. Fast Semantic Search (Default: 10 results)
 node <skill_dir>/exa_tool.mjs search "<query>" [numResults] [category]
 
