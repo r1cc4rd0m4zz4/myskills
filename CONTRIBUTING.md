@@ -63,8 +63,9 @@ Detailed instructions, tool execution commands, and edge-case guidance.
    ```
 
 3. **Verify Functionality**:
+   - Run the central verification gate: `./scripts/verify.sh` (audits privacy/PII, runs Node tests and Python test suite).
    - For Node scripts: Ensure they run with `node script.mjs` on Node 18+ without `npm install`.
-   - For Python scripts: Ensure unit tests pass using `uv run run_tests.py` or `pytest`.
+   - For Python scripts: Ensure unit tests pass using `uv run run_tests.py`.
 
 4. **Submit a Pull Request**:
    - Ensure `README.md` catalog table is updated with your new skill.

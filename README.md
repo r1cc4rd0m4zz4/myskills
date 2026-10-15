@@ -58,7 +58,7 @@ Many agent skill toolkits and MCP wrappers introduce:
 | :--- | :--- | :--- | :--- |
 | [`agent-guardrails`](skills/agent-guardrails/SKILL.md) | Universal defensive engineering guardrails: anti-bloat ladder, zero trust code auditing, and strict sanitization. | Universal Markdown | Prevents autonomous pushes, enforces input whitelisting, and bans PII/host leaks. |
 | [`web-search`](skills/web-search/SKILL.md) | High-signal web search, page extraction, and deep reasoning via Exa with ~80% token compaction and tracking deduplication. | Node.js 18+ (ESM, 0 deps) | Tracking parameter stripping (`utm_*`, `gclid`), URL normalization, multi-block parsing. |
-| [`secure-url-fetcher`](skills/secure-url-fetcher/SKILL.md) | Security-hardened HTTP/HTTPS fetcher with pre-resolution IP blacklisting and socket pinning. | Python (`uv`, `urllib3==2.2.3`) | Eliminates SSRF, DNS Rebinding, IPv6 bypass, and indirect HTTP redirect attacks. |
+| [`secure-url-fetcher`](skills/secure-url-fetcher/SKILL.md) | Security-hardened HTTP/HTTPS fetcher with pre-resolution IP blacklisting and socket pinning. | Python (`uv`, `urllib3==2.8.0`) | Eliminates SSRF, DNS Rebinding, IPv6 bypass, and indirect HTTP redirect attacks. |
 
 ---
 
