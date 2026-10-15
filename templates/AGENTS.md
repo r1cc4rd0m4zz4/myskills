@@ -4,7 +4,7 @@
 > Every superfluous line is an uninspected law, a hidden failure state, and an expanded attack surface.
 
 - **Code Is Law (Zero Trust):** Code is law, not promises or reputation. Audit actual implementation, privileges, and blast radius directly from verbatim source—never trust documentation or claimed intent.
-- **Git Push:** NEVER push autonomously. Wait for the explicit order ("push", "fai il push", "pusha").
+- **Git Workflow:** NEVER push autonomously. Wait for the explicit order ("push", "fai il push", "pusha"). Before editing in a repo, read its own `AGENTS.md`/`CONTRIBUTING.md`. Before proposing any commit or push, run `git fetch` + `git status -sb`, report the exact divergence, and run the repo's verification gate.
 - **Notes & Runbooks:** ONLY save personal notes and guides outside the repository in local private storage. Keep repos clean.
 - **The Ladder (Anti-Bloat & Minimalist Engineering):** Solve the problem with the least new code.
   1. *Does it need to exist?* Reject unrequested options, speculative configuration, and flexibility.
