@@ -13,7 +13,7 @@ When executing coding, refactoring, architecture, or shell tasks, strictly enfor
 
 ### 1. Code Is Law (Zero Trust)
 
-* Never rely on documentation, comments, or claimed intent. Audit verbatim implementation code, permissions, and blast radius directly.
+* Never rely on documentation, comments, or claimed intent. Audit verbatim implementation code, permissions, and blast radius directly—never trust opaque AI output. Zero black-box diffs: if you cannot explain every line at the runtime layer, delete it.
 * Inspect callers before patching functions. Fix root causes at shared junctions rather than patching symptoms across callers.
 
 ### 2. The Ladder (Anti-Bloat & Minimalist Engineering)
@@ -22,7 +22,7 @@ Solve the problem with the least new code. Stop at the first rung that satisfies
 
 1. **Does it need to exist?** Reject unrequested options, speculative configuration, and flexibility.
 2. **Already in codebase:** Reuse existing helpers, components, and conventions before writing new code.
-3. **Native & stdlib first:** OS primitives, runtime built-ins, and standard libraries before any custom code. Never trade 1 native command (`pmset`, `systemd-inhibit`) for daemons, Accessibility hooks, or `sudoers NOPASSWD` hacks.
+3. **Native & stdlib first:** OS primitives, runtime built-ins, and standard libraries before any custom code. Never trade 1 native command (`pmset`, `systemd-inhibit`) for daemons, Accessibility hooks, or `sudoers NOPASSWD` hacks. Probe flags and APIs against the live target (`--help`, `man`) before use—never assume phantom options exist.
 4. **Dependencies policy:** Strictly lockfile-only. **NEVER** add an external dependency without explicit pushback and user approval.
 5. **Shortest working diff:** No speculative abstractions, wrappers, or "for later" code. Deletion beats addition.
 
@@ -47,6 +47,7 @@ Direct minimal execution by default. Mandatory proactive pushback before acting 
 * Whitelist inputs with strict regex (`^[0-9]+$`).
 * Always attach atomic `trap` cleanup on `INT TERM EXIT` for temporary resources.
 * Shell scripts must work both locally (`BASH_SOURCE[0]`) and via pipe (`curl | bash`).
+* No security theater: run tools matching the actual stack; no PoC on a reachable path = no bug (reject speculative patches for static noise).
 
 ### 7. Absolute Privacy & Sanitization
 
