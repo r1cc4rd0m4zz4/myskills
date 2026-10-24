@@ -57,16 +57,11 @@ Detailed instructions, tool execution commands, and edge-case guidance.
    cd myskills
    ```
 
-2. **Link for Local Testing**:
-   ```bash
-   ./scripts/link-skills.sh
-   ```
-
-3. **Verify Functionality**:
+2. **Verify Functionality**:
    - Run the central verification gate: `./scripts/verify.sh` (audits privacy/PII, runs Node tests and Python test suite).
    - For Node scripts: Ensure they run with `node script.mjs` on Node 18+ without `npm install`.
    - For Python scripts: Ensure unit tests pass using `uv run run_tests.py`.
 
-4. **Submit a Pull Request**:
+3. **Submit a Pull Request**:
    - Ensure `README.md` catalog table is updated with your new skill.
    - Describe the security model, token impact, and verification steps in the PR description.

@@ -33,3 +33,12 @@ This document establishes the common vocabulary and domain concepts across the s
 - **Pre-Execution DNS Resolution**: Resolving domain names to exact IP addresses *prior* to opening any socket connection.
 - **IP Pinning**: Forcing the network transport to connect directly to the verified, resolved IP address rather than re-resolving the hostname during the HTTP handshake.
 - **SNI / Host Header Reconstruction**: Re-injecting the original hostname into the HTTP `Host` header and TLS Server Name Indication (SNI) so that virtual hosting and TLS certificate verification succeed against the pinned IP.
+
+---
+
+## 4. Static PDF Forensics & CDR (`pdf-security-scanner`)
+
+- **Object Stream (`/ObjStm`)**: PDF 1.5+ container stream compressing multiple indirect PDF objects inside a single `/FlateDecode` payload; must be decompressed in memory to expose hidden `/JS` or `/Launch` actions.
+- **Hex Name Obfuscation (`/#XX`)**: ISO 32000-1 mechanism allowing any character in a PDF `/Name` token to be written as `#` followed by its two-digit hex ASCII value (e.g., `/#4a#53` for `/JS`).
+- **Structural vs. Binary Stream Separation**: Stripping raw compressed `stream...endstream` blocks prior to dictionary scanning so random compressed bytes matching short tokens (`/JS`, `/AA`) do not trigger false positives.
+- **XREF-Preserving Content Disarm (CDR)**: Neutralizing active PDF triggers (`/JavaScript`, `/OpenAction`, `/Launch`, `/AA`) by replacing them with inert tokens of the exact same byte length so the cross-reference (`xref`) byte-offset table remains valid.

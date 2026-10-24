@@ -28,12 +28,14 @@ node skills/web-search/run_tests.mjs
 
 echo ""
 echo "======================================================================"
-echo "  3. Python Test Suite (secure-url-fetcher)"
+echo "  3. Python Test Suite (secure-url-fetcher & pdf-security-scanner)"
 echo "======================================================================"
 if command -v uv >/dev/null 2>&1; then
   uv run skills/secure-url-fetcher/run_tests.py
+  uv run skills/pdf-security-scanner/run_tests.py
 elif command -v python3 >/dev/null 2>&1; then
   python3 skills/secure-url-fetcher/run_tests.py
+  python3 skills/pdf-security-scanner/run_tests.py
 else
   echo "  ⚠️ Warning: neither uv nor python3 found; skipping python tests."
 fi

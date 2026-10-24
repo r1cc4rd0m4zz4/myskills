@@ -9,7 +9,7 @@
            |___/                     
 ```
 
-> Zero-dependency, auditable skills for AI coding agents (Pi, Claude Code, Cursor, Codex).
+> Zero-dependency, auditable skills for AI coding agents (Antigravity, OpenCode, Pi, Claude Code, Cursor, Codex).
 
 [![skills.sh](https://skills.sh/b/r1cc4rd0m4zz4/myskills)](https://skills.sh/r1cc4rd0m4zz4/myskills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -24,6 +24,7 @@
 | [`agent-guardrails`](skills/agent-guardrails/SKILL.md) | Anti-bloat ladder, zero-trust auditing, no autonomous push | Universal Markdown | Copy template to `AGENTS.md` |
 | [`web-search`](skills/web-search/SKILL.md) | Web search & page extraction via Exa, stripped of tracking params | Node 18+ (0 deps) | `node skills/web-search/exa_tool.mjs search "<query>"` |
 | [`secure-url-fetcher`](skills/secure-url-fetcher/SKILL.md) | HTTP fetcher with pre-resolution DNS pinning (blocks SSRF & metadata) | Python (`uv`, `urllib3==2.8.0`) | `uv run skills/secure-url-fetcher/secure-fetcher.py "<url>"` |
+| [`pdf-security-scanner`](skills/pdf-security-scanner/SKILL.md) | Static PDF malware audit, in-memory CMap text preview & XREF-safe CDR | Python 3.8+ (0 deps) | `uv run skills/pdf-security-scanner/pdf_scanner.py scan "<path>"` |
 
 ---
 
@@ -32,7 +33,7 @@
 Install into your agent environment via [skills.sh](https://skills.sh):
 
 ```bash
-# Install full suite
+# Install full suite (Antigravity, OpenCode, Claude Code, Cursor, Codex)
 npx skills add r1cc4rd0m4zz4/myskills
 
 # Or install in Pi Coding Agent
@@ -59,6 +60,9 @@ uv run skills/secure-url-fetcher/secure-fetcher.py "https://example.com/feed.xml
 # Malicious attempts to probe cloud metadata or internal subnets fail immediately:
 uv run skills/secure-url-fetcher/secure-fetcher.py "http://169.254.169.254/latest/meta-data/"
 # -> PermissionError: Access Denied (Private / Local IP range)
+
+# 4. Static PDF malware audit, in-memory text preview, or XREF-preserving disarm
+uv run skills/pdf-security-scanner/pdf_scanner.py scan "path/to/document.pdf"
 ```
 
 ---
@@ -73,7 +77,7 @@ Offline test suite with zero network dependencies:
 
 - **Privacy audit:** Scans diffs for local user paths (`/Users/...`, `/home/...`) or secrets.
 - **Node.js suite:** 9 tests for tracking parameter stripping and compaction.
-- **Python suite:** 30 tests for SSRF, DNS rebinding, IPv6 link-local, and redirect attacks.
+- **Python suite:** 41 tests for SSRF, DNS rebinding, IPv6 link-local, redirect attacks, and static PDF malware/CDR analysis.
 
 ---
 
