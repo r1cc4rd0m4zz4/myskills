@@ -21,7 +21,7 @@
 
 | Skill | What it does | Runtime | Quick Run |
 |---|---|---|---|
-| [`agent-guardrails`](skills/agent-guardrails/SKILL.md) | Anti-bloat ladder, zero-trust auditing, no autonomous push | Universal Markdown | Copy template to `AGENTS.md` |
+| [`agent-guardrails`](skills/agent-guardrails/SKILL.md) | Anti-bloat ladder, devil's advocate grilling, zero-trust auditing, no autonomous push | Universal Markdown | Copy/append template to `AGENTS.md` |
 | [`web-search`](skills/web-search/SKILL.md) | Web search & page extraction via Exa, stripped of tracking params | Node 18+ (0 deps) | `node skills/web-search/exa_tool.mjs search "<query>"` |
 | [`secure-url-fetcher`](skills/secure-url-fetcher/SKILL.md) | HTTP fetcher with pre-resolution DNS pinning (blocks SSRF & metadata) | Python (`uv`, `urllib3==2.8.0`) | `uv run skills/secure-url-fetcher/secure-fetcher.py "<url>"` |
 | [`pdf-security-scanner`](skills/pdf-security-scanner/SKILL.md) | Static PDF malware audit, in-memory CMap text preview & XREF-safe CDR | Python 3.8+ (0 deps) | `uv run skills/pdf-security-scanner/pdf_scanner.py scan "<path>"` |
@@ -38,9 +38,32 @@ npx skills add r1cc4rd0m4zz4/myskills
 
 # Or install in Pi Coding Agent
 pi install git:github.com/r1cc4rd0m4zz4/myskills
+```
 
-# Or grab just the universal AGENTS.md guardrails
+### Universal Guardrails Setup (`AGENTS.md`)
+
+Deploy the defensive Anti-Bloat guardrails (`templates/AGENTS.md`) into your workspace or globally.
+
+#### When to Replace vs Append:
+* **Greenfield (New repository):** Use **Replace** (`-o AGENTS.md`) to establish an uncompromising defensive baseline from day one.
+* **Brownfield (Existing repository):** Use **Append** (`>> AGENTS.md`) to preserve project-specific build commands, domain glossaries, and ADRs while injecting the guardrails.
+* **Global profile (`~/.agents/`):** Use **Append** so host preferences, custom tools, and aliases are never wiped out.
+
+#### Core Guardrails Enforced:
+* **The Ladder (Anti-Bloat):** Reject speculative abstractions, wrappers, and unrequested flexibility. Deletion beats addition.
+* **Devil's Advocate Grilling:** In any interview or planning phase (`/grill-me`, `/grill-with-docs`, SDD discovery), the agent MUST provide an explicit counter-option challenging the proposal against minimal-code alternatives.
+* **Code Is Law (Zero Trust):** Zero black-box diffs; audit verbatim runtime behavior; never push autonomously without explicit authorization.
+* **Verification & Zero-Cost CI:** Mandatory negative branch testing, strict sanitization (no personal paths), and $0 account spending limit.
+
+```bash
+# Workspace setup (Fresh repository - Replace)
 curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md -o AGENTS.md
+
+# Workspace setup (Existing AGENTS.md - Append to preserve project instructions)
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md >> AGENTS.md
+
+# Global setup (Antigravity CLI / User-wide agent rules - Append)
+mkdir -p ~/.agents && curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md >> ~/.agents/AGENTS.md
 ```
 
 ---

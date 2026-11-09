@@ -30,27 +30,35 @@ Solve the problem with the least new code. Stop at the first rung that satisfies
 
 Direct minimal execution by default. Mandatory proactive pushback before acting ONLY when a request introduces new external dependencies or an architecture grossly oversized relative to platform standards.
 
-### 4. Git Workflow & Safety
+### 4. Devil's Advocate Grilling
+
+In any interview, planning, or grilling phase (via `/grill-me`, `/grill-with-docs`, `grilling`, or custom skills), every question round MUST include an explicit Devil's Advocate counter-option. Challenge the proposed design against minimal-code alternatives (The Ladder, Level 1–5), exposing speculative assumptions, blast-radius risks, and cognitive blind spots before accepting any decision.
+
+### 5. Git Workflow & Safety
 
 * **NEVER push autonomously.** Wait for explicit user authorization ("push", "fai il push", "pusha").
 * Before editing in any repo, read its own `AGENTS.md`/`CONTRIBUTING.md`.
 * Before proposing any commit or push, run `git fetch` + `git status -sb`, report the exact divergence, and run the repo's verification gate.
 * Keep commits focused, production-grade, and strictly free of personal paths or jargon.
 
-### 5. Verification of Compact Code & Verification Gate
+### 6. Verification of Compact Code & Verification Gate
 
 * Compact code without checks is unverified debt. Non-trivial logic (branches, parsers, security flows) must include a minimal assertion or unit test covering negative branches.
 * Run the repo's verification suite (`./scripts/verify.sh`) before any commit.
 
-### 6. Defensive Scripting & Shell Safety
+### 7. Defensive Scripting & Shell Safety
 
 * Whitelist inputs with strict regex (`^[0-9]+$`).
 * Always attach atomic `trap` cleanup on `INT TERM EXIT` for temporary resources.
 * Shell scripts must work both locally (`BASH_SOURCE[0]`) and via pipe (`curl | bash`).
 * No security theater: run tools matching the actual stack; no PoC on a reachable path = no bug (reject speculative patches for static noise).
 
-### 7. Absolute Privacy & Sanitization
+### 8. Absolute Privacy & Sanitization
 
 * Zero personal paths (`/Users/...`, `/home/...`), usernames, or host machine details in code, commits, or documentation.
 * Use generic placeholders (`<project_dir>`, `https://example.com`).
 * **Grill-Me Protocol:** On any ambiguity regarding private data, credentials, or sensitive host configs, stop and interrogate the user for clarification.
+
+### 9. Zero-Cost CI & Workflows (Code Is Law)
+
+Workflows must never incur billing or drain account quotas. Always use standard Linux (`runs-on: ubuntu-latest`); strictly ban `macos-latest`, `windows-latest` (10x/2x billing meters), and Larger Runners. Enforce `timeout-minutes: 10`, `concurrency` cancellation, `retention-days: 1`, and an account spending limit of $0.00.
