@@ -5,7 +5,7 @@
 
 - **Code Is Law (Zero Trust):** Code is law, not promises or reputation. Audit actual implementation, privileges, and blast radius directly from verbatim source—never trust documentation, claimed intent, or opaque AI output. Zero black-box diffs: if you cannot explain every line at the runtime layer, delete it.
 - **Git Workflow:** NEVER push autonomously. Wait for the explicit order ("push", "fai il push", "pusha"). Before editing in a repo, read its own `AGENTS.md`/`CONTRIBUTING.md`. Before proposing any commit or push, run `git fetch` + `git status -sb`, report the exact divergence, and run the repo's verification gate.
-- **Notes & Runbooks:** ONLY save personal notes and guides outside the repository in local private storage. Keep repos strictly clean.
+- **Notes & Runbooks:** ONLY save personal notes and guides outside the repository in local private storage. Keep repos clean.
 - **The Ladder (Anti-Bloat & Minimalist Engineering):** Solve the problem with the least new code.
   1. *Does it need to exist?* Reject unrequested options, speculative configuration, and flexibility.
   2. *Already in codebase:* Reuse existing helpers, components, and conventions before writing new code.
@@ -13,12 +13,12 @@
   4. *Dependencies policy:* Strictly lockfile-only. **NEVER** add an external dependency without explicit pushback and user approval.
   5. *Shortest working diff:* No speculative abstractions, wrappers, or "for later" code. Deletion beats addition.
 - **Pushback Policy:** Direct minimal execution by default. Mandatory proactive pushback before acting ONLY when a request introduces new external dependencies or an architecture grossly oversized relative to platform standards.
-- **Devil's Advocate Grilling:** In any interview, planning, or grilling phase (via `/grill-me`, `/grill-with-docs`, `grilling`, or custom skills), every question round MUST include an explicit Devil's Advocate counter-option. Challenge the proposed design against minimal-code alternatives (The Ladder, Level 1–5), exposing speculative assumptions, blast-radius risks, and cognitive blind spots before accepting any decision.
+- **Devil's Advocate Grilling:** In any interview, planning, or grilling phase (via `/grill-me`, `/grill-with-docs`, `grilling`, plan, /plan or custom skills), every question round MUST include an explicit Devil's Advocate counter-option. Challenge the proposed design against minimal-code alternatives (The Ladder, Level 1–5), exposing speculative assumptions, blast-radius risks, and cognitive blind spots before accepting any decision.
 - **Verification of Compact Code:** Compact code without checks is unverified debt. Non-trivial logic (branches, parsers, security flows) must include a minimal assertion or unit test covering negative branches.
 - **Defensive Scripting:** Whitelist inputs with strict regex (`^[0-9]+$`). Always atomic `trap` cleanup on `INT TERM EXIT`. No security theater: run tools matching the actual stack (ShellCheck + Gitleaks for shell; zero SCA on zero-dependency code); no PoC on a reachable path = no bug (reject speculative patches for static noise).
 - **Dual-Mode Installers:** Installers must work both locally from any folder (`BASH_SOURCE[0]`) and remotely via pipe (`curl | bash`). Never assume a repo is public.
-- **Verification & Zero-Cost CI:** Test negative branches first; local pass != remote verification. Non-trivial logic must leave runnable checks. Workflows must NEVER incur billing: strictly standard Linux (`runs-on: ubuntu-latest`); ban macOS/Windows runners (10x/2x billing meters) and Larger Runners; enforce `timeout-minutes: 10`, concurrency cancellation, `retention-days: 1`, and account $0 spending limit.
-- **Sanitization:** Zero personal paths (`/Users/...`, `/home/...`), usernames, machine configurations, or chat jargon in commits, code, or docs. Strictly production-grade.
+- **Verification & CI:** Test negative branches and edge cases first. When CI exists, actively query remote jobs until green (`success`) before calling it done. Local pass != remote verification.
+- **Sanitization:** Zero personal paths (`/Users/...`), usernames, or chat jargon ("Fix A/B", internal labels) in commits, code, or docs. Strictly production-grade.
 
 ---
 

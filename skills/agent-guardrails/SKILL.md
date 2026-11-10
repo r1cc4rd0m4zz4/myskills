@@ -32,7 +32,7 @@ Direct minimal execution by default. Mandatory proactive pushback before acting 
 
 ### 4. Devil's Advocate Grilling
 
-In any interview, planning, or grilling phase (via `/grill-me`, `/grill-with-docs`, `grilling`, or custom skills), every question round MUST include an explicit Devil's Advocate counter-option. Challenge the proposed design against minimal-code alternatives (The Ladder, Level 1–5), exposing speculative assumptions, blast-radius risks, and cognitive blind spots before accepting any decision.
+In any interview, planning, or grilling phase (via `/grill-me`, `/grill-with-docs`, `grilling`, plan, /plan or custom skills), every question round MUST include an explicit Devil's Advocate counter-option. Challenge the proposed design against minimal-code alternatives (The Ladder, Level 1–5), exposing speculative assumptions, blast-radius risks, and cognitive blind spots before accepting any decision.
 
 ### 5. Git Workflow & Safety
 
@@ -62,3 +62,36 @@ In any interview, planning, or grilling phase (via `/grill-me`, `/grill-with-doc
 ### 9. Zero-Cost CI & Workflows (Code Is Law)
 
 Workflows must never incur billing or drain account quotas. Always use standard Linux (`runs-on: ubuntu-latest`); strictly ban `macos-latest`, `windows-latest` (10x/2x billing meters), and Larger Runners. Enforce `timeout-minutes: 10`, `concurrency` cancellation, `retention-days: 1`, and an account spending limit of $0.00.
+
+---
+
+## Discovery & Configuration Paths
+
+Different AI agent harnesses discover rules from distinct filesystem locations. Ensure guardrails are deployed to the correct path:
+
+### 1. Antigravity CLI (`agy`)
+* **Hierarchical (Local):** Scans upwards from the current working directory (`$CWD`) to the root of the Git repository (`.git/`) for `AGENTS.md`.
+* **Global (User-Wide):** Scans exclusively in `~/.gemini/config/AGENTS.md` (or `~/.gemini/AGENTS.md`).
+* **Warning:** Antigravity CLI does **not** scan `~/.agents/AGENTS.md`. Placing rules solely in `~/.agents/` will cause `agy` to ignore them entirely.
+
+### 2. Generic Agents (Pi, OpenCode, Claude Code, Cursor, Codex, Windsurf)
+* **Local:** Reads `./AGENTS.md` located in the repository root.
+* **Global:** Reads `~/.agents/AGENTS.md`.
+
+### 3. Dual-Environment Symlink Setup
+To maintain a single source of truth across both Antigravity CLI and generic agents, establish `~/.gemini/config/AGENTS.md` as canonical and symlink `~/.agents/AGENTS.md` to it:
+
+```bash
+mkdir -p ~/.gemini/config ~/.agents
+ln -sf ~/.gemini/config/AGENTS.md ~/.agents/AGENTS.md
+```
+
+Or deploy automatically via the dual-mode installer:
+
+```bash
+# Via pipe:
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/scripts/install-guardrails.sh | bash -s -- --symlink
+
+# Or locally:
+./scripts/install-guardrails.sh --symlink
+```

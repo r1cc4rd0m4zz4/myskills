@@ -44,26 +44,63 @@ pi install git:github.com/r1cc4rd0m4zz4/myskills
 
 Deploy the defensive Anti-Bloat guardrails (`templates/AGENTS.md`) into your workspace or globally.
 
+#### Agent Discovery Hierarchy & Configuration Paths:
+* **Antigravity CLI (`agy`)**:
+  - **Hierarchical (Local):** Walks upwards from `$CWD` to the Git repository root (`.git/`) searching for `AGENTS.md`.
+  - **Global:** Loads user-wide rules exclusively from `~/.gemini/config/AGENTS.md` (or `~/.gemini/AGENTS.md`).
+  - *Warning:* Antigravity CLI does **not** scan `~/.agents/AGENTS.md`.
+* **Generic Agents (Pi, OpenCode, Claude Code, Cursor, Codex, Windsurf)**:
+  - **Local:** Discovers `./AGENTS.md` in repository root.
+  - **Global:** Loads user-wide rules from `~/.agents/AGENTS.md`.
+* **Dual-Agent Symlink Architecture:**
+  - Create a single source of truth in `~/.gemini/config/AGENTS.md` and symlink `~/.agents/AGENTS.md` to it so all agents stay perfectly synchronized.
+
 #### When to Replace vs Append:
 * **Greenfield (New repository):** Use **Replace** (`-o AGENTS.md`) to establish an uncompromising defensive baseline from day one.
 * **Brownfield (Existing repository):** Use **Append** (`>> AGENTS.md`) to preserve project-specific build commands, domain glossaries, and ADRs while injecting the guardrails.
-* **Global profile (`~/.agents/`):** Use **Append** so host preferences, custom tools, and aliases are never wiped out.
+* **Global setup:** Use **Append** (or the installer) so host preferences, custom tools, and aliases are never wiped out.
 
 #### Core Guardrails Enforced:
 * **The Ladder (Anti-Bloat):** Reject speculative abstractions, wrappers, and unrequested flexibility. Deletion beats addition.
-* **Devil's Advocate Grilling:** In any interview or planning phase (`/grill-me`, `/grill-with-docs`, SDD discovery), the agent MUST provide an explicit counter-option challenging the proposal against minimal-code alternatives.
+* **Devil's Advocate Grilling:** In any interview, planning, or grilling phase (`/grill-me`, `/grill-with-docs`, `grilling`, plan, /plan), the agent MUST provide an explicit counter-option challenging the proposal against minimal-code alternatives.
 * **Code Is Law (Zero Trust):** Zero black-box diffs; audit verbatim runtime behavior; never push autonomously without explicit authorization.
 * **Verification & Zero-Cost CI:** Mandatory negative branch testing, strict sanitization (no personal paths), and $0 account spending limit.
 
+#### Option A: Automated Dual-Mode Installer (Recommended)
+
+Run directly via pipe or from a local clone:
+
 ```bash
-# Workspace setup (Fresh repository - Replace)
+# Dual-agent setup with symlink (Canonical ~/.gemini/config/AGENTS.md -> ~/.agents/AGENTS.md)
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/scripts/install-guardrails.sh | bash -s -- --symlink
+
+# Or install for Antigravity CLI only:
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/scripts/install-guardrails.sh | bash -s -- --agy
+
+# Or install for Generic Agents only:
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/scripts/install-guardrails.sh | bash -s -- --generic
+```
+
+#### Option B: Manual CLI Commands
+
+```bash
+# --- Workspace Setup ---
+# Fresh repository (Replace)
 curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md -o AGENTS.md
 
-# Workspace setup (Existing AGENTS.md - Append to preserve project instructions)
+# Existing AGENTS.md (Append to preserve project instructions)
 curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md >> AGENTS.md
 
-# Global setup (Antigravity CLI / User-wide agent rules - Append)
+# --- Global Setup: Antigravity CLI (agy) ---
+mkdir -p ~/.gemini/config && curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md >> ~/.gemini/config/AGENTS.md
+
+# --- Global Setup: Generic Agents (Pi, OpenCode, Claude Code, Cursor, Codex) ---
 mkdir -p ~/.agents && curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md >> ~/.agents/AGENTS.md
+
+# --- Global Setup: Dual-Environment Symlink ---
+mkdir -p ~/.gemini/config ~/.agents
+curl -fsSL https://raw.githubusercontent.com/r1cc4rd0m4zz4/myskills/main/templates/AGENTS.md >> ~/.gemini/config/AGENTS.md
+ln -sf ~/.gemini/config/AGENTS.md ~/.agents/AGENTS.md
 ```
 
 ---
